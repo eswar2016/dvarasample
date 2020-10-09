@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <title>Home</title>
+
+
+  </head>
+  
+<body>
+
+<div class="container">
+  <p>Select Category to check Sub Categories</p>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li class="{{ message.tags }}" style="color: green;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  <form action="{% url 'home' %}" method="POST">{% csrf_token %}
+    {% for field in form.visible_fields %}
+    <div class="form-group col-md-6">
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
+    
+    </div>
+  {% endfor %}
+    <div class="result form-group col-md-6">
+
+    </div>
+    <div class="col-md-6">
+
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</form>
+</div>
+<script>
+  $(document).ready(function(){
+    $('.messages').fadeOut( "5000" );
+  })
+  $("select#id_category").change(function () {
+           var category = $('#id_category').find(":selected").val();
+           console.log(category);
+           $.ajax({
+                type:'POST',
+                url: '{% url "search" %}',
+               
+                data:{
+                  'cat_id': category,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                
+                success:function(data){
+                  console.log(data)
+                  $('#id_subcategory').removeAttr('required')
+                  $('#id_subcategory').hide()
+                  $('.result').html(data)
+                }
+              })
+        });
+</script>
+</body>
+</html>

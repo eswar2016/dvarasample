@@ -1,0 +1,8 @@
+<select name="subcategory" class="form-control" id="id_sub_category" required="">
+    <option value="" selected="">---------</option>
+    {% for sub in sub_categories %}
+    <option value="{{sub.name}}">{{sub.name}}</option>
+    {% endfor %}
+  
+   
+  </select>
